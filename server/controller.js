@@ -15,17 +15,17 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
 module.exports = {
     seed: (req, res) => {
         sequelize.query(`
-        DROP TABLE IF EXISTS decklist;
-        DROP TABLE IF EXISTS user;
-        DROP TABLE IF EXISTS card;
         DROP TABLE IF EXISTS cards_to_decks;
+        DROP TABLE IF EXISTS card;
+        DROP TABLE IF EXISTS users;
+        DROP TABLE IF EXISTS decklist;
 
         CREATE TABLE decklist (
             decklist_id SERIAL PRIMARY KEY,
             name VARCHAR(50)
         );
 
-        CREATE TABLE user (
+        CREATE TABLE users (
             user_id SERIAL PRIMARY KEY,
             decklist_id INTEGER REFERENCES decklist,
             username VARCHAR(20)
@@ -53,19 +53,19 @@ module.exports = {
 
         INSERT INTO card (name, type, cost, influence, faction, strength, memory, influence_limit, deck_size)
         VALUES
-        ('Ayla "Bios" Rahim: Stimulant Specialist', identity, null, null, 'shaper', null, null 15, 45)
-        ('Rielle "Kit" Peddler: Transhuman', 'identity', null, null, 'shaper', null, null, 10, 45)
+        ('Ayla "Bios" Rahim: Stimulant Specialist', 'identity', null, null, 'shaper', null, null, 15, 45),
+        ('Rielle "Kit" Peddler: Transhuman', 'identity', null, null, 'shaper', null, null, 10, 45),
         ('Diesel', 'event', 0, 2, 'shaper', null, null, null, null),
-        ('Test Run', 'event' 3, 3, 'shaper', null, null, null, null),
-        ('The Maker's Eye', 'event', 2, 2, 'shaper', null, null, null, null),
+        ('Test Run', 'event', 3, 3, 'shaper', null, null, null, null),
+        ('The Maker''s Eye', 'event', 2, 2, 'shaper', null, null, null, null),
         ('Atman', 'program', 3, 3, 'shaper', 0, 1, null, null),
         ('Chameleon', 'program', 2, 3, 'shaper', 3, 1, null, null),
         ('Egret', 'program', 2, 2, 'shaper', null, 1, null, null),
         ('Gordion Blade', 'program', 4, 3, 'shaper', 2, 1, null, null),
-        ('Aesop's Pawnshop', 'resource', 1, 2, 'shaper', null, null, null, null),
-        ('Professional Contacts', 'resource, 5, 2, 'shaper', null, null, null, null),
+        ('Aesop''s Pawnshop', 'resource', 1, 2, 'shaper', null, null, null, null),
+        ('Professional Contacts', 'resource', 5, 2, 'shaper', null, null, null, null),
         ('Quetzal: Free Spirit', 'identity', null, null, 'anarch', null, null, 15, 45),
-        ("Reina Roja: Freedom Fighter', 'identity', null, null, 'anarch' null, null, 15, 45),
+        ('Reina Roja: Freedom Fighter', 'identity', null, null, 'anarch', null, null, 15, 45),
         ('En Passant', 'event', 0, 2, 'anarch', null, null, null, null),
         ('Retrieval Run', 'event', 3, 2, 'anarch', null, null, null, null),
         ('Clot', 'program', 2, 2, 'anarch', null, 1, null, null),
@@ -89,8 +89,15 @@ module.exports = {
         ('Security Testing', 'resource', 0, 3, 'criminal', null, null, null, null),
         ('Dirty Laundry', 'event', 2, 0, 'neutral', null, null, null, null),
         ('PrePaid VoicePAD', 'hardware', 2, 0, 'neutral', null, null, null, null),
-        ('Earthrise Hotel', 'resource', 4, 0, 'neutral', null, null, null, null)
+        ('Earthrise Hotel', 'resource', 4, 0, 'neutral', null, null, null, null);
         `)
+        .then(() => {
+            console.log('DB seeded')
+            res.status(200).send()
+        })
+        .catch(err => {
+            console.log('Error seeding DB', err)
+        })
     }
     
 }
