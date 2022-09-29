@@ -80,8 +80,22 @@ module.exports = {
 
     },
 
-    deleteDeck: (req, res) => {
+    getDeck: (req, res) => {
         const {decklistName} = req.body
+        sequelize.query(`
+            SELECT * FROM cards AS c
+            JOIN cards_to_decks AS ctd
+            ON c.card_id = ctd.card_id
+            JOIN decklist AS d
+            ON d.decklist_id = ctd.decklist_id
+            WHERE d.name = '${decklistName}';
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err))
+    },
+
+    deleteDeck: (req, res) => {
+        const {decklistName} = req.params
         sequelize.query(`
             SELECT decklist_id AS @did FROM decklists
             WHERE name = '${decklistName}';
@@ -101,7 +115,7 @@ module.exports = {
     },
 
     modifyDeck: (req, res) => {
-        const {decklistName, adds, deletes} = req.body
+        const {decklistName, adds, deletes} = req.params
 
         for (i = 0; i < deletes.length; i++){
             let card = deletes[i]
