@@ -21,7 +21,7 @@ module.exports = {
             VALUES ('${username}');
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
-        .catch(err => console.log(err))
+        .catch(() => alert('User already exists'))
     },
 
     deleteUser: (req, res) => {
