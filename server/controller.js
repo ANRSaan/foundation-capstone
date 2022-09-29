@@ -27,60 +27,132 @@ module.exports = {
     deleteUser: (req, res) => {
         const {username} = req.params
         sequelize.query(`
-            DELETE FROM cards_to_decks
-            JOIN users
-            ON users.decklist_id = cards_to_decks.decklist_id
-            WHERE users.username = ${username};
-
-            DELETE FROM decklist
-            JOIN users
-            ON users.decklist_id = decklist.decklist_id
-            WHERE users.username = ${username};
+            SELECT user_id AS @uid FROM users
+            WHERE username = '${username}';
 
             DELETE FROM users
             WHERE username = ${username};
+
+            DELETE FROM cards_to_decks
+            JOIN decklists
+            ON decklists.decklist_id = cards_to_decks.decklist_id
+            WHERE decklist.user_id = @uid;
+
+            DELETE FROM decklists
+            WHERE user_id = @uid;
         `)
-        .then(dbRes =>  res.status(200).send(dbRes[0]))
+        .then(() =>  res.status(200).send())
         .catch(err => console.log(err))
     },
 
-    // createDeck: (req, res) => {
-    //     const {decklistName, cardNames} = req.body
-    //     sequelize.query(`
-    //         INSERT INTO decklist (name)
-    //         VALUES ('${decklistName}');
-    //     `)
+    createDeck: (req, res) => {
+        const {decklistName, cardNames, username} = req.body
+        sequelize.query(`
+            INSERT INTO decklists (user_id, name)
+            VALUES (
+                (SELECT user_id 
+                FROM users 
+                WHERE username = '${username}'), 
+                '${decklistName});
+        `)
+        .then(() => res.status(200).send())
+        .catch(err => console.log(err))
 
-    //     for (i=0; i < cardNames.length; i++){
-    //         sequelize.query(`
-    //             INSERT INTO cards_to_decks (decklist_id, card_id)
-    //             ##DO THE CRAZY SHIT HERE##
-    //         `)
-    //     }
+        for (i=0; i < cardNames.length; i++){
+            let card = cardNames[i]
+            
+            sequelize.query(`
+                SELECT decklist_id INTO @did FROM decklists
+                WHERE name = '${decklistName}';
+            
+                SELECT card_id INTO @cid FROM cards
+                WHERE name = '${card}';
 
-    // },
+                INSERT INTO cards_to_decks (decklist_id, card_id)
+                VALUES (@did, @cid);
+                
+            `)
+            .then(() => res.status(200).send())
+            .catch(err => console.log(err))
+            
+        }
+        
+
+    },
 
     deleteDeck: (req, res) => {
+        const {decklistName} = req.body
+        sequelize.query(`
+            SELECT decklist_id AS @did FROM decklists
+            WHERE name = '${decklistName}';
 
+            DELETE FROM users
+            WHERE decklist_id = @did;
+
+            DELETE FROM decklists
+            WHERE decklist_id = @did;
+
+            DELETE FROM cards_to_decks
+            WHERE decklist_id = @did;
+        `)
+        .then(() => res.status(200).send())
+        .catch(err => console.log(err))
+
+    },
+
+    modifyDeck: (req, res) => {
+        const {decklistName, adds, deletes} = req.body
+
+        for (i = 0; i < deletes.length; i++){
+            let card = deletes[i]
+            sequelize.query(`
+                SELECT card_id AS @cid FROM cards
+                WHERE name = '${card}';
+
+                DELETE FROM cards_to_decks
+                WHERE card_id = @cid;
+            `)
+            .then(() => res.status(200).send())
+            .catch(err => console.log(err))
+        }
+
+        for (i = 0; i < adds.length; i++){
+            let card = adds[i]
+            sequelize.query(`
+                SELECT decklist_id AS did FROM decklist
+                WHERE name = '${decklistName}';
+
+                SELECT card_id AS @cid FROM card
+                WHERE name = '${card}';
+
+                INSERT INTO cards_to_decks (decklist_id, card_id)
+                VALUES (@did, @cid);
+            `)
+            .then(() => res.status(200).send())
+            .catch(err => console.log(err))
+        }
+        
     },
 
     seed: (req, res) => {
         sequelize.query(`
         DROP TABLE IF EXISTS cards_to_decks;
-        DROP TABLE IF EXISTS card;
+        DROP TABLE IF EXISTS cards;
         DROP TABLE IF EXISTS users;
-        DROP TABLE IF EXISTS decklist;
-
-        CREATE TABLE decklist (
-            decklist_id SERIAL PRIMARY KEY,
-            name VARCHAR(50)
-        );
+        DROP TABLE IF EXISTS decklists;
 
         CREATE TABLE users (
             user_id SERIAL PRIMARY KEY,
-            decklist_id INTEGER REFERENCES decklist,
             username VARCHAR(20)
         );
+
+        CREATE TABLE decklist (
+            decklist_id SERIAL PRIMARY KEY,
+            user_id INTEGER REFERENCES users,
+            name VARCHAR(50)
+        );
+
+        
 
         CREATE TABLE card (
             card_id SERIAL PRIMARY KEY,
