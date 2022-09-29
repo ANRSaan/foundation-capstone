@@ -13,6 +13,57 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
 })
 
 module.exports = {
+
+    createUser: (req, res) => {
+        const {username} = req.body
+        sequelize.query(`
+            INSERT INTO users (name)
+            VALUES ('${username}');
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err))
+    },
+
+    deleteUser: (req, res) => {
+        const {username} = req.params
+        sequelize.query(`
+            DELETE FROM cards_to_decks
+            JOIN users
+            ON users.decklist_id = cards_to_decks.decklist_id
+            WHERE users.username = ${username};
+
+            DELETE FROM decklist
+            JOIN users
+            ON users.decklist_id = decklist.decklist_id
+            WHERE users.username = ${username};
+
+            DELETE FROM users
+            WHERE username = ${username};
+        `)
+        .then(dbRes =>  res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err))
+    },
+
+    // createDeck: (req, res) => {
+    //     const {decklistName, cardNames} = req.body
+    //     sequelize.query(`
+    //         INSERT INTO decklist (name)
+    //         VALUES ('${decklistName}');
+    //     `)
+
+    //     for (i=0; i < cardNames.length; i++){
+    //         sequelize.query(`
+    //             INSERT INTO cards_to_decks (decklist_id, card_id)
+    //             ##DO THE CRAZY SHIT HERE##
+    //         `)
+    //     }
+
+    // },
+
+    deleteDeck: (req, res) => {
+
+    },
+
     seed: (req, res) => {
         sequelize.query(`
         DROP TABLE IF EXISTS cards_to_decks;
@@ -47,7 +98,7 @@ module.exports = {
 
         CREATE TABLE cards_to_decks (
             ctd_id SERIAL PRIMARY KEY,
-            decklist_ID INTEGER REFERENCES decklist,
+            decklist_id INTEGER REFERENCES decklist,
             card_id INTEGER REFERENCES card
         );
 
