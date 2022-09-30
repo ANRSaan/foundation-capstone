@@ -15,34 +15,71 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
 module.exports = {
 
     createUser: (req, res) => {
-        const {username} = req.body
+        const {userName} = req.body
+        console.log(req.body)
         sequelize.query(`
             INSERT INTO users (name)
-            VALUES ('${username}');
+            VALUES ('${userName}');
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
-        .catch(() => alert('User already exists'))
+        .catch(() => res.status(400).send())
     },
 
     deleteUser: (req, res) => {
-        const {username} = req.params
+        const {userName} = req.params
         sequelize.query(`
-            SELECT user_id AS @uid FROM users
-            WHERE username = '${username}';
-
             DELETE FROM users
-            WHERE username = ${username};
-
-            DELETE FROM cards_to_decks
-            JOIN decklists
-            ON decklists.decklist_id = cards_to_decks.decklist_id
-            WHERE decklist.user_id = @uid;
-
-            DELETE FROM decklists
-            WHERE user_id = @uid;
+            WHERE username = '${userName}';
         `)
-        .then(() =>  res.status(200).send())
+        .then(() => res.status(200).send())
         .catch(err => console.log(err))
+    },
+
+    getCards: (req, res) => {
+        sequelize.query(`
+            SELECT * FROM cards
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+    },
+
+    getIdentities: (req, res) => {
+        sequelize.query(`
+            SELECT * FROM cards
+            WHERE type = 'identity'
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+    },
+
+    getEvents: (req, res) => {
+        sequelize.query(`
+            SELECT * FROM cards
+            WHERE type = 'event'
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+    },
+
+    getPrograms: (req, res) => {
+        sequelize.query(`
+            SELECT * FROM cards
+            WHERE type = 'program'
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+    },
+
+    getHardware: (req, res) => {
+        sequelize.query(`
+            SELECT * FROM cards
+            WHERE type = 'hardware'
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+    },
+
+    getResources: (req, res) => {
+        sequelize.query(`
+            SELECT * FROM cards
+            WHERE type = 'resource'
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
     },
 
     createDeck: (req, res) => {
@@ -76,8 +113,6 @@ module.exports = {
             .catch(err => console.log(err))
             
         }
-        
-
     },
 
     getDeck: (req, res) => {
@@ -150,17 +185,17 @@ module.exports = {
 
     seed: (req, res) => {
         sequelize.query(`
-        DROP TABLE IF EXISTS cards_to_decks;
-        DROP TABLE IF EXISTS cards;
-        DROP TABLE IF EXISTS users;
-        DROP TABLE IF EXISTS decklists;
+        DROP TABLE IF EXISTS cards cascade;
+        DROP TABLE IF EXISTS users cascade;
+        DROP TABLE IF EXISTS cards_to_decks cascade;
+        DROP TABLE IF EXISTS decklists cascade;
 
         CREATE TABLE users (
             user_id SERIAL PRIMARY KEY,
             username VARCHAR(20)
         );
 
-        CREATE TABLE decklist (
+        CREATE TABLE decklists (
             decklist_id SERIAL PRIMARY KEY,
             user_id INTEGER REFERENCES users,
             name VARCHAR(50)
@@ -168,7 +203,7 @@ module.exports = {
 
         
 
-        CREATE TABLE card (
+        CREATE TABLE cards (
             card_id SERIAL PRIMARY KEY,
             name VARCHAR(60),
             type VARCHAR(40),
@@ -188,7 +223,7 @@ module.exports = {
             card_id INTEGER REFERENCES card
         );
 
-        INSERT INTO card (name, type, cost, influence, faction, strength, memory, influence_limit, deck_size)
+        INSERT INTO cards (name, type, cost, influence, faction, strength, memory, influence_limit, deck_size)
         VALUES
         ('Ayla "Bios" Rahim: Stimulant Specialist', 'identity', null, null, 'shaper', null, null, 15, 45),
         ('Rielle "Kit" Peddler: Transhuman', 'identity', null, null, 'shaper', null, null, 10, 45),

@@ -7,11 +7,11 @@ const deleteUserBtn = document.getElementById('deleteUserButton')
 const createUser = (userName) => {
     axios.post('/api/users')
         .then(res => alert(`User ${userName} Created`))
-        .catch(err => console.log(err))
+        .catch((err) => console.log(err) /*alert(`User already exists`)*/)
 }
 
 const deleteUser = (userName) => {
-    axios.post('/api/users')
+    axios.delete(`/api/users:${userName}`)
         .then(res => alert(`User ${userName} Deleted`))
         .catch(err => console.log(err))
 }
