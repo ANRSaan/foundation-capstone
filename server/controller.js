@@ -16,12 +16,14 @@ module.exports = {
 
     createUser: (req, res) => {
         const {userName} = req.body
-        console.log(req.body)
         sequelize.query(`
-            INSERT INTO users (name)
+            INSERT INTO users (username)
             VALUES ('${userName}');
         `)
-        .then(dbRes => res.status(200).send(dbRes[0]))
+        .then(dbRes => {
+            res.status(200).send(dbRes[0])        
+        })
+      
         .catch(() => res.status(400).send())
     },
 
@@ -99,10 +101,10 @@ module.exports = {
             let card = cardNames[i]
             
             sequelize.query(`
-                SELECT decklist_id INTO @did FROM decklists
+                SELECT decklist_id AS @did FROM decklists
                 WHERE name = '${decklistName}';
             
-                SELECT card_id INTO @cid FROM cards
+                SELECT card_id AS @cid FROM cards
                 WHERE name = '${card}';
 
                 INSERT INTO cards_to_decks (decklist_id, card_id)
@@ -121,7 +123,7 @@ module.exports = {
             SELECT * FROM cards AS c
             JOIN cards_to_decks AS ctd
             ON c.card_id = ctd.card_id
-            JOIN decklist AS d
+            JOIN decklists AS d
             ON d.decklist_id = ctd.decklist_id
             WHERE d.name = '${decklistName}';
         `)
@@ -152,6 +154,7 @@ module.exports = {
     modifyDeck: (req, res) => {
         const {decklistName, adds, deletes} = req.params
 
+        
         for (i = 0; i < deletes.length; i++){
             let card = deletes[i]
             sequelize.query(`
@@ -168,7 +171,7 @@ module.exports = {
         for (i = 0; i < adds.length; i++){
             let card = adds[i]
             sequelize.query(`
-                SELECT decklist_id AS did FROM decklist
+                SELECT decklist_id AS did FROM decklists
                 WHERE name = '${decklistName}';
 
                 SELECT card_id AS @cid FROM card
@@ -219,8 +222,8 @@ module.exports = {
 
         CREATE TABLE cards_to_decks (
             ctd_id SERIAL PRIMARY KEY,
-            decklist_id INTEGER REFERENCES decklist,
-            card_id INTEGER REFERENCES card
+            decklist_id INTEGER REFERENCES decklists,
+            card_id INTEGER REFERENCES cards
         );
 
         INSERT INTO cards (name, type, cost, influence, faction, strength, memory, influence_limit, deck_size)

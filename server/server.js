@@ -27,7 +27,7 @@ app.delete('/api/users/:userName', deleteUser)
 
 //decklists
 app.post('/api/decklist', createDeck)
-app.put('/api/decklist:decklistName', modifyDeck)
+// app.post('/api/decklist:decklistName', modifyDeck)
 app.delete('/api/decklist:decklistName', deleteDeck)
 
 const port = process.env.PORT || 5050
