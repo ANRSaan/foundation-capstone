@@ -19,10 +19,20 @@ const cardDisplayer = data => {
         let typeA = document.createElement('a')
         let costTd = document.createElement('td')
         let costA = document.createElement('a')
+        let factionTd = document.createElement('td')
+        let factionA = document.createElement('A')
+        // let spacer = document.createElement('br')
+        // let spacer2 = document.createElement('br')
+
+
+        nameA.setAttribute('class', 'cardName')
+        typeA.setAttribute('class', 'cardType')
+        costA.setAttribute('class', 'cardCost')
 
         nameA.textContent = `${data[i].name}`
         typeA.textContent = `${data[i].type}`
         costA.textContent = `${data[i].cost}`
+        factionA.textContent = `${data[i].faction}`
 
         deckTr.appendChild(nameTd)
         nameTd.appendChild(nameA)
@@ -30,6 +40,12 @@ const cardDisplayer = data => {
         typeTd.appendChild(typeA)
         deckTr.appendChild(costTd)
         costTd.appendChild(costA)
+        deckTr.appendChild(factionTd)
+        factionTd.appendChild(factionA)
+        // deckTr.appendChild(spacer)
+        // deckTr.appendChild(spacer2)
+
+
     }
 }
 
@@ -58,7 +74,7 @@ const cardGetter = () => {
 
 // NEED deckMaker 
 // const createDeck = (body) => {
-//     axios.post(`/api/decklist`, body)
+//     axios.post(`http://localhost:5050/api/decklist`, body)
 //         .then(() => {
 //             deckMaker(res.data)
 //         })
@@ -109,6 +125,6 @@ const deckGetter = (event) => {
 }
 
 
-// cardGetter()
+cardGetter()
 createUserBtn.addEventListener('click', userHandler)
 deleteUserBtn.addEventListener('click', userDeleter)
