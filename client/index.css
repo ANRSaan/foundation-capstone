@@ -1,4 +1,23 @@
+body {
+    margin: 1rem;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+  font-family: "Open Sans", sans-serif;
+}
+
 #cardDiv {
-    background-color: red;
-    width: 50%
+    background-color: #F56670;
+    width: 50%;
+    float:right;
+}
+
+#deckDiv {
+    background-color: #77ba99;
+    width: 50%;
+    float:left;
+}
+
+table {
+    margin:30
 }

@@ -1,18 +1,32 @@
 const createUserBtn = document.getElementById('createUserButton')
 const deleteUserBtn = document.getElementById('deleteUserButton')
+const cardAddButton = document.getElementById('cardDiv')
+const deckAddButton = document.getElementById('deckDiv')
 
 
 
 
 
 const cardDisplayer = data => {
-    let deckTr = document.getElementById('cardHolder')
-
-    while (deckTr.firstChild){
-        deckTr.removeChild(deckTr.firstChild)
+    let deckTbody = document.getElementById('cardHolder')
+    
+    while (deckTbody.firstChild){
+        deckTbody.removeChild(deckTbody.firstChild)
     }
 
     for (let i in data) {
+        let cardName = data[i].name
+
+        let deckTr = document.createElement('tr')
+        let numberTd = document.createElement("td")
+        let numberLabel0 = document.createElement('label')
+        let numberLabel1 = document.createElement('label')
+        let numberLabel2 = document.createElement('label')
+        let numberLabel3 = document.createElement('label')
+        let numberInput0 = document.createElement('input')
+        let numberInput1 = document.createElement('input')
+        let numberInput2 = document.createElement('input')
+        let numberInput3 = document.createElement('input')
         let nameTd = document.createElement('td')
         let nameA = document.createElement('a')
         let typeTd = document.createElement('td')
@@ -20,20 +34,45 @@ const cardDisplayer = data => {
         let costTd = document.createElement('td')
         let costA = document.createElement('a')
         let factionTd = document.createElement('td')
-        let factionA = document.createElement('A')
-        // let spacer = document.createElement('br')
-        // let spacer2 = document.createElement('br')
+        let factionA = document.createElement('a')
 
-
+        deckTr.setAttribute('class' `${cardName}`)
         nameA.setAttribute('class', 'cardName')
         typeA.setAttribute('class', 'cardType')
         costA.setAttribute('class', 'cardCost')
+        
+        numberInput0.setAttribute('type', 'button')
+        numberInput1.setAttribute('type', 'button')
+        numberInput2.setAttribute('type', 'button')
+        numberInput3.setAttribute('type', 'button')
+        numberLabel0.setAttribute('textContent', '0')
+        numberLabel1.setAttribute('textContent', '1')
+        numberLabel2.setAttribute('textContent', '2')
+        numberLabel3.setAttribute('textContent', '3')
+        numberInput0.setAttribute('value', '0')
+        numberInput1.setAttribute('value', '1')
+        numberInput2.setAttribute('value', '2')
+        numberInput3.setAttribute('value', '3')
+        numberInput0.setAttribute('id', `${cardName}`)
+        numberInput1.setAttribute('id', `${cardName}`)
+        numberInput2.setAttribute('id', `${cardName}`)
+        numberInput3.setAttribute('id', `${cardName}`)
 
         nameA.textContent = `${data[i].name}`
         typeA.textContent = `${data[i].type}`
         costA.textContent = `${data[i].cost}`
         factionA.textContent = `${data[i].faction}`
 
+        deckTbody.appendChild(deckTr)
+        deckTr.appendChild(numberTd)
+        numberTd.appendChild(numberLabel0)
+        numberLabel0.appendChild(numberInput0)
+        numberTd.appendChild(numberLabel1)
+        numberLabel1.appendChild(numberInput1)
+        numberTd.appendChild(numberLabel2)
+        numberLabel2.appendChild(numberInput2)
+        numberTd.appendChild(numberLabel3)
+        numberLabel3.appendChild(numberInput3)
         deckTr.appendChild(nameTd)
         nameTd.appendChild(nameA)
         deckTr.appendChild(typeTd)
@@ -42,10 +81,6 @@ const cardDisplayer = data => {
         costTd.appendChild(costA)
         deckTr.appendChild(factionTd)
         factionTd.appendChild(factionA)
-        // deckTr.appendChild(spacer)
-        // deckTr.appendChild(spacer2)
-
-
     }
 }
 
@@ -128,3 +163,9 @@ const deckGetter = (event) => {
 cardGetter()
 createUserBtn.addEventListener('click', userHandler)
 deleteUserBtn.addEventListener('click', userDeleter)
+cardAddButton.addEventListener('click', click => {
+    console.log(click.target.id)
+    if (click.target && click.target.type === 'button'){
+        let cardName = click.target.id
+    }
+})
