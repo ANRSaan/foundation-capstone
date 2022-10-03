@@ -1,5 +1,7 @@
 const createUserBtn = document.getElementById('createUserButton')
 const deleteUserBtn = document.getElementById('deleteUserButton')
+const nameDeckBtn = document.getElementById('createDeckButton')
+const deleteDeckBtn = document.getElementById('deleteDeckButton')
 const cardAddButton = document.getElementById('cardDiv')
 const deckAddButton = document.getElementById('deckDiv')
 
@@ -36,7 +38,7 @@ const cardDisplayer = data => {
         let factionTd = document.createElement('td')
         let factionA = document.createElement('a')
 
-        deckTr.setAttribute('class' `${cardName}`)
+        // deckTr.setAttribute('class', `${cardName}`)
         nameA.setAttribute('class', 'cardName')
         typeA.setAttribute('class', 'cardType')
         costA.setAttribute('class', 'cardCost')
@@ -88,8 +90,11 @@ const cardDisplayer = data => {
 
 // Creates a user based on the information passed in from userHandler
 const createUser = (userName) => {
-    axios.post('http://localhost:5050/api/users', userName)
-        .then(res => alert(`User ${userName.userName} Created`))
+    axios.post('http://localhost:5050/api/users', userName)        
+        .then(res => {
+            currentName = document.getElementById('currentName')
+            currentName.innerHTML= `${userName}`
+        })
         .catch((err) => console.log(err) /*alert(`User already exists`)*/)
 }
 
@@ -101,19 +106,47 @@ const deleteUser = (userName) => {
 
 const cardGetter = () => {
     axios.get('http://localhost:5050/api/cards')
-        .then((res) =>
-            cardDisplayer(res.data)
-        )
+        .then(res => cardDisplayer(res.data))
         .catch(err => console.log(err))
 }
 
-// NEED deckMaker 
-// const createDeck = (body) => {
-//     axios.post(`http://localhost:5050/api/decklist`, body)
-//         .then(() => {
-//             deckMaker(res.data)
-//         })
-// }
+const deckNamer = (deckName) => {
+    deckname = deckName.deckName
+    axios.post('http://localhost:5050/api/decklist', deckName)
+        .then(res => {
+            deckName = document.getElementById('deckName')
+            // parent = deckName.parentNode
+            deckName.innerHTML= `${deckname}`
+
+            // let deleteDeckBtn = document.createElement('button')
+            // deleteDeckBtn.setAttribute('id', 'deleteDeckButton')
+            // deleteDeckBtn.innerHTML = "Delete Deck"
+            // parent.appendChild(deleteDeckBtn)
+        })
+        .catch(err => console.log(err))
+}
+
+const deckDeleter = (deckName) => {
+    axios.delete(`http://localhost:5050/api/decklist${deckName}`)
+        .then(res => {
+            deck = document.getElementById('deckName')
+            deck.innerHTML = ''
+            alert(`${deckName.deckName} deleted.`)
+        })
+        .catch(err => console.log(err))
+}
+
+const cardAdder = (cardName) => {
+    axios.post('http://localhost:5050/api/decklist/card', cardName)
+        .then(res => deckDisplayer(res.data))
+        .catch(err => console.log(err))
+}
+
+const cardDeleter = (cardName) => {
+    axios.delete(`http://localhost:5050/api/decklist${cardName}`)
+        .then(res => deckDisplayer(res.data))
+        .catch(err => console.log(err))
+}
 
 // Sets up user to send to createUser
 const userHandler = (e) => {
@@ -142,6 +175,7 @@ const userDeleter = (e) => {
 
     if (user.value === '') {
         alert('Please enter a username before submitting')
+        return
     }
 
     let newName = user.value
@@ -151,21 +185,75 @@ const userDeleter = (e) => {
     user.value = ''
 }
 
-const deckGetter = (event) => {
-    event.preventDefault()
+const nameDeck = (e) => {
+    e.preventDefault()
 
-    bodyObj = {}
+    let deck = document.getElementById('deckField')
 
-    createDeck(bodyObj)
+    if (deck.value === '') {
+        alert('Please enter a username before submitting')
+        return
+    }
+
+    nameDeckBtn.remove()
+    let deckName = {
+        deckName: deck.value,
+        userName: 'Default'
+    }
+    deckNamer(deckName)
+
+    deck.value = ''
+}
+
+const deleteDeck = e => {
+    e.preventDefault()
+    
+    let deck = document.getElementById('deckField')
+
+    if (deck.value === '') {
+        alert('Please confirm the name of the deck to delete')
+        return
+    }
+
+    let deckName = {
+        deckName: deck.value
+    }
+
+    deckDeleter(deckName)
+    deck.value = ''
+}
+
+const dbSeeder = () => {
+    axios.post(`http://localhost:5050/api/seed`)
 }
 
 
+// const deckGetter = (event) => {
+//     event.preventDefault()
+
+//     bodyObj = {}
+
+//     createDeck(bodyObj)
+// }
+
+dbSeeder()
 cardGetter()
 createUserBtn.addEventListener('click', userHandler)
 deleteUserBtn.addEventListener('click', userDeleter)
+nameDeckBtn.addEventListener('click', nameDeck)
+deleteDeckBtn.addEventListener('click', deleteDeck)
 cardAddButton.addEventListener('click', click => {
     console.log(click.target.id)
     if (click.target && click.target.type === 'button'){
         let cardName = click.target.id
+        let numberFinder = document.getElementById(`${cardName}`)
+        let number = numberFinder.value
+
+        if (number !== '0'){
+            cardAdder(cardName)        
+        }
+        if (number === '0'){
+            cardDeleter(cardName)
+        }
     }
 })

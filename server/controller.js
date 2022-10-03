@@ -40,14 +40,19 @@ module.exports = {
     getCards: (req, res) => {
         sequelize.query(`
             SELECT * FROM cards
+            ORDER BY type;
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
+    },
+
+    addCards: (req, res) => {
+
     },
 
     getIdentities: (req, res) => {
         sequelize.query(`
             SELECT * FROM cards
-            WHERE type = 'identity'
+            WHERE type = 'identity';
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
     },
@@ -55,7 +60,7 @@ module.exports = {
     getEvents: (req, res) => {
         sequelize.query(`
             SELECT * FROM cards
-            WHERE type = 'event'
+            WHERE type = 'event';
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
     },
@@ -63,7 +68,7 @@ module.exports = {
     getPrograms: (req, res) => {
         sequelize.query(`
             SELECT * FROM cards
-            WHERE type = 'program'
+            WHERE type = 'program';
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
     },
@@ -71,7 +76,7 @@ module.exports = {
     getHardware: (req, res) => {
         sequelize.query(`
             SELECT * FROM cards
-            WHERE type = 'hardware'
+            WHERE type = 'hardware';
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
     },
@@ -79,42 +84,51 @@ module.exports = {
     getResources: (req, res) => {
         sequelize.query(`
             SELECT * FROM cards
-            WHERE type = 'resource'
+            WHERE type = 'resource';
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
     },
 
+    deleteCards: (req, res) => {
+
+    },
+
     createDeck: (req, res) => {
-        const {decklistName, cardNames, username} = req.body
+        const {deckName, userName} = req.body
+        console.log(userName)
+        console.log(deckName)
         sequelize.query(`
             INSERT INTO decklists (user_id, name)
             VALUES (
                 (SELECT user_id 
                 FROM users 
-                WHERE username = '${username}'), 
-                '${decklistName});
+                WHERE username = '${userName}'), 
+                '${deckName}'
+                );
         `)
-        .then(() => res.status(200).send())
+        .then(dbRes => {
+            res.status(200).send(dbRes[0])
+        })
         .catch(err => console.log(err))
 
-        for (i=0; i < cardNames.length; i++){
-            let card = cardNames[i]
+        // for (i=0; i < cardNames.length; i++){
+        //     let card = cardNames[i]
             
-            sequelize.query(`
-                SELECT decklist_id AS @did FROM decklists
-                WHERE name = '${decklistName}';
+        //     sequelize.query(`
+        //         SELECT decklist_id AS @did FROM decklists
+        //         WHERE name = '${deckName}';
             
-                SELECT card_id AS @cid FROM cards
-                WHERE name = '${card}';
+        //         SELECT card_id AS @cid FROM cards
+        //         WHERE name = '${card}';
 
-                INSERT INTO cards_to_decks (decklist_id, card_id)
-                VALUES (@did, @cid);
+        //         INSERT INTO cards_to_decks (decklist_id, card_id)
+        //         VALUES (@did, @cid);
                 
-            `)
-            .then(() => res.status(200).send())
-            .catch(err => console.log(err))
+        //     `)
+        //     .then(() => res.status(200).send())
+        //     .catch(err => console.log(err))
             
-        }
+        // }
     },
 
     getDeck: (req, res) => {
@@ -132,19 +146,10 @@ module.exports = {
     },
 
     deleteDeck: (req, res) => {
-        const {decklistName} = req.params
+        const {deckName} = req.params
         sequelize.query(`
-            SELECT decklist_id AS @did FROM decklists
-            WHERE name = '${decklistName}';
-
-            DELETE FROM users
-            WHERE decklist_id = @did;
-
             DELETE FROM decklists
-            WHERE decklist_id = @did;
-
-            DELETE FROM cards_to_decks
-            WHERE decklist_id = @did;
+            WHERE name = '${deckName}';
         `)
         .then(() => res.status(200).send())
         .catch(err => console.log(err))
@@ -217,14 +222,17 @@ module.exports = {
             memory INTEGER,
             influence_limit INTEGER,
             deck_size INTEGER
-
         );
 
         CREATE TABLE cards_to_decks (
             ctd_id SERIAL PRIMARY KEY,
             decklist_id INTEGER REFERENCES decklists,
-            card_id INTEGER REFERENCES cards
+            card_id INTEGER REFERENCES cards,
+            number INTEGER
         );
+
+        INSERT INTO users (username)
+        VALUES ('Default');
 
         INSERT INTO cards (name, type, cost, influence, faction, strength, memory, influence_limit, deck_size)
         VALUES

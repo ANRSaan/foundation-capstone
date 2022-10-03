@@ -2,7 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const {seed, getDeck, createUser, createDeck, modifyDeck, deleteDeck, deleteUser, getCards, getIdentities, getEvents, getPrograms, getHardware, getResources} = require('./controller.js')
+const {seed, getDeck, createUser, createDeck, deleteCards, addCards, deleteDeck, deleteUser, getCards, getIdentities, getEvents, getPrograms, getHardware, getResources} = require('./controller.js')
 
 app.use(express.json())
 app.use(cors())
@@ -20,6 +20,8 @@ app.get('/api/cards/events', getEvents)
 app.get('/api/cards/programs', getPrograms)
 app.get('/api/cards/hardware', getHardware)
 app.get('/api/cards/resources', getResources)
+app.post('/api/decklist/card', addCards)
+app.delete('api/cards/:cardName', deleteCards)
 
 //users
 app.post('/api/users', createUser)
