@@ -20,7 +20,6 @@ app.get('/api/cards/events', getEvents)
 app.get('/api/cards/programs', getPrograms)
 app.get('/api/cards/hardware', getHardware)
 app.get('/api/cards/resources', getResources)
-app.post('/api/decklist/card', addCards)
 app.delete('api/cards/:cardName', deleteCards)
 
 //users
@@ -29,7 +28,7 @@ app.delete('/api/users/:userName', deleteUser)
 
 //decklists
 app.post('/api/decklist', createDeck)
-// app.post('/api/decklist:decklistName', modifyDeck)
+app.post('/api/decklist/card', addCards)
 app.delete('/api/decklist:decklistName', deleteDeck)
 
 const port = process.env.PORT || 5050

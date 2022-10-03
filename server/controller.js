@@ -46,7 +46,18 @@ module.exports = {
     },
 
     addCards: (req, res) => {
+        const {cardName, cardNumber, deckName} = req.body
 
+        sequelize.query(`
+            INSERT INTO cards_to_decks (decklist_id, card_id, number)
+            VALUES (
+                (SELECT decklist_id FROM decklists
+                WHERE name = '${deckName}'),
+                (SELECT card_id FROM cards
+                WHERE name = '${cardName}'),
+                ${cardNumber}
+            );
+        `)
     },
 
     getIdentities: (req, res) => {
@@ -90,7 +101,7 @@ module.exports = {
     },
 
     deleteCards: (req, res) => {
-
+        console.log('hi')
     },
 
     createDeck: (req, res) => {
@@ -156,40 +167,40 @@ module.exports = {
 
     },
 
-    modifyDeck: (req, res) => {
-        const {decklistName, adds, deletes} = req.params
+    // modifyDeck: (req, res) => {
+    //     const {decklistName, adds, deletes} = req.params
 
         
-        for (i = 0; i < deletes.length; i++){
-            let card = deletes[i]
-            sequelize.query(`
-                SELECT card_id AS @cid FROM cards
-                WHERE name = '${card}';
+    //     for (i = 0; i < deletes.length; i++){
+    //         let card = deletes[i]
+    //         sequelize.query(`
+    //             SELECT card_id AS @cid FROM cards
+    //             WHERE name = '${card}';
 
-                DELETE FROM cards_to_decks
-                WHERE card_id = @cid;
-            `)
-            .then(() => res.status(200).send())
-            .catch(err => console.log(err))
-        }
+    //             DELETE FROM cards_to_decks
+    //             WHERE card_id = @cid;
+    //         `)
+    //         .then(() => res.status(200).send())
+    //         .catch(err => console.log(err))
+    //     }
 
-        for (i = 0; i < adds.length; i++){
-            let card = adds[i]
-            sequelize.query(`
-                SELECT decklist_id AS did FROM decklists
-                WHERE name = '${decklistName}';
+    //     for (i = 0; i < adds.length; i++){
+    //         let card = adds[i]
+    //         sequelize.query(`
+    //             SELECT decklist_id AS did FROM decklists
+    //             WHERE name = '${decklistName}';
 
-                SELECT card_id AS @cid FROM card
-                WHERE name = '${card}';
+    //             SELECT card_id AS @cid FROM card
+    //             WHERE name = '${card}';
 
-                INSERT INTO cards_to_decks (decklist_id, card_id)
-                VALUES (@did, @cid);
-            `)
-            .then(() => res.status(200).send())
-            .catch(err => console.log(err))
-        }
+    //             INSERT INTO cards_to_decks (decklist_id, card_id)
+    //             VALUES (@did, @cid);
+    //         `)
+    //         .then(() => res.status(200).send())
+    //         .catch(err => console.log(err))
+    //     }
         
-    },
+    // },
 
     seed: (req, res) => {
         sequelize.query(`
@@ -240,12 +251,12 @@ module.exports = {
         ('Rielle "Kit" Peddler: Transhuman', 'identity', null, null, 'shaper', null, null, 10, 45),
         ('Diesel', 'event', 0, 2, 'shaper', null, null, null, null),
         ('Test Run', 'event', 3, 3, 'shaper', null, null, null, null),
-        ('The Maker''s Eye', 'event', 2, 2, 'shaper', null, null, null, null),
+        ('The Makers Eye', 'event', 2, 2, 'shaper', null, null, null, null),
         ('Atman', 'program', 3, 3, 'shaper', 0, 1, null, null),
         ('Chameleon', 'program', 2, 3, 'shaper', 3, 1, null, null),
         ('Egret', 'program', 2, 2, 'shaper', null, 1, null, null),
         ('Gordion Blade', 'program', 4, 3, 'shaper', 2, 1, null, null),
-        ('Aesop''s Pawnshop', 'resource', 1, 2, 'shaper', null, null, null, null),
+        ('Aesops Pawnshop', 'resource', 1, 2, 'shaper', null, null, null, null),
         ('Professional Contacts', 'resource', 5, 2, 'shaper', null, null, null, null),
         ('Quetzal: Free Spirit', 'identity', null, null, 'anarch', null, null, 15, 45),
         ('Reina Roja: Freedom Fighter', 'identity', null, null, 'anarch', null, null, 15, 45),

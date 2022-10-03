@@ -136,8 +136,8 @@ const deckDeleter = (deckName) => {
         .catch(err => console.log(err))
 }
 
-const cardAdder = (cardName) => {
-    axios.post('http://localhost:5050/api/decklist/card', cardName)
+const cardAdder = (cardBody) => {
+    axios.post('http://localhost:5050/api/decklist/card', cardBody)
         .then(res => deckDisplayer(res.data))
         .catch(err => console.log(err))
 }
@@ -243,14 +243,21 @@ deleteUserBtn.addEventListener('click', userDeleter)
 nameDeckBtn.addEventListener('click', nameDeck)
 deleteDeckBtn.addEventListener('click', deleteDeck)
 cardAddButton.addEventListener('click', click => {
-    console.log(click.target.id)
+    let number = click.target.value
     if (click.target && click.target.type === 'button'){
         let cardName = click.target.id
-        let numberFinder = document.getElementById(`${cardName}`)
-        let number = numberFinder.value
+        let deckName = document.getElementById('deckName').innerHTML
+        console.log(deckName)
 
         if (number !== '0'){
-            cardAdder(cardName)        
+
+            let cardBody = {
+                cardName: `${cardName}`,
+                cardNumber: `${number}`,
+                deckName: `${deckName}`
+            }
+
+            cardAdder(cardBody)        
         }
         if (number === '0'){
             cardDeleter(cardName)
