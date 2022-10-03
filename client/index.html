@@ -5,6 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Runner Net</title>
+    <style>
+        @font-face {
+            font-family: alienWorld;
+            src: url('./alien-world-font/AlienWorld-owj0x.ttf');
+        }
+    </style>
     <!-- <link rel="stylesheet" href="./reset.css"> -->
     <link rel="stylesheet" href="./index.css">
 </head>
@@ -23,71 +29,100 @@
     </section>
     <section>
         <div id="deckChooser">
-            <!-- <p id="deckNamer">Name Deck</p> -->
             <input id="deckField" type="text" placeholder="Deck Name">
             <button id="createDeckButton">Create</button>
             <button id="deleteDeckButton">Delete</button>
         </div>
     </section>
-    <section>
+    <!-- <section>
+        <div id="deckSwitcher">
+            <button id="switchDeckButton">Switch Decks</button>
+        </div>
+        <div id="selectDiv"></div>
+    </section> -->
+    <section id="bob">
         <div id="deckName">
             <p></p>
         </div>
     </section>
 
-
-    <div id="deckDiv">
-        <table>
-            <thead>
-                <tr>
-                    <th>
-                        <a href="#" id="numberD">Number</a>
-                    </th>
-                    <th>
-                        <a href="#" id="nameD">Name</a>
-                    </th>
-                    <th>
-                        <a href="#" id="typeD">Type</a>
-                    </th>
-                    <th>
-                        <a href="#" id="costD">Cost</a>
-                    </th>
-                    <th>
-                        <a href="#" id="factionD">Faction</a>
-                    </th>
-                </tr>
-            </thead>
-            <tbody id="deckHolder">
-            </tbody>
-        </table>
+    <div class="cardWrap">
+        <div id="deckDiv">
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <a href="#" id="numberD">Number</a>
+                        </th>
+                        <th>
+                            <a href="#" id="nameD">Name</a>
+                        </th>
+                        <th>
+                            <a href="#" id="typeD">Type</a>
+                        </th>
+                        <th>
+                            <a href="#" id="costD">Cost</a>
+                        </th>
+                        <th>
+                            <a href="#" id="factionD">Faction</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="deckHolder">
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div id="cardDiv" class="nah">
-        <table>
-            <thead>
-                <tr>
-                    <th>
-                        <a href="#" id="numberA">Number</a>
-                    </th>
-                    <th>
-                        <a href="#" id="nameA">Name</a>
-                    </th>
-                    <th>
-                        <a href="#" id="typeA">Type</a>
-                    </th>
-                    <th>
-                        <a href="#" id="costA">Cost</a>
-                    </th>
-                    <th>
-                        <a href="#" id="factionA">Faction</a>
-                    </th>
-                </tr>
-            </thead>
-            <tbody id="cardHolder">
-            </tbody>
-        </table>
+    <div class="cardWrap">
+        <div></div>
+        <div id="cardDiv" class="nah">
+            <table>
+                <thead id="headFloat">
+                    <tr>
+                        <th>
+                            <button id="all">All</button>
+                        </th>
+                        <th>
+                            <button id="event">Events</button>
+                        </th>
+                        <th>
+                            <button id="hardware">Hardware</button>
+                        </th>
+                        <th>
+                            <button id="program">Programs</button>
+                        </th>
+                        <th>
+                            <button id="resource">Resources</button>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <a href="#" id="numberA">Number</a>
+                        </th>
+                        <th>
+                            <a href="#" id="nameA">Name</a>
+                        </th>
+                        <th>
+                            <a href="#" id="typeA">Type</a>
+                        </th>
+                        <th>
+                            <a href="#" id="costA">Cost</a>
+                        </th>
+                        <th>
+                            <a href="#" id="factionA">Faction</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="cardHolder">
+                </tbody>
+            </table>
+        </div>
     </div>
-    
 
     <script src="../node_modules/axios/dist/axios.min.js"></script>
     <script src="./index.js"></script>

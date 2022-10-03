@@ -1,17 +1,26 @@
 body {
     margin: 1rem;
     padding: 1rem;
-    max-width: 1204px;
+    max-width: 1200px;
     margin: 2rem auto;
     font-family: "Open Sans", sans-serif;
     height: 100%;
     background-color: #f4faff;
 }
 
+h1 {
+    margin-top: -20px;
+    margin-bottom: 40px;
+    text-align: center;
+    font-family: alienWorld;
+}
+
 #deckChooser {
     background-color: #118ab2;
+    border: 1px solid black;
     width: 25%;
     margin: auto;
+    margin-bottom: 170px;
     text-align: center;
     align-items: center;
     justify-content: center;
@@ -23,12 +32,31 @@ body {
     margin-right: 45px;
 }
 
+/* #headFloat {
+    display: inline-block;
+} */
+
+
+
 #deckName {
+    font-family: alienWorld;
+    font-size: 30px;
+    width: 50%;
     height: 40px;
     /* padding-top: 20px; */
     margin-top: 20px;
-    text-align: center;
+    margin-left: 10px;
+    text-align: left;
 }
+
+/* .cardWrap {
+    align-content: ;
+    display: flex;
+    background-color: #f7f7f2;
+    width: 50%;
+    float:right;
+    height: 100%;
+} */
 
 #cardDiv {
     border: 1px solid black;
@@ -55,6 +83,6 @@ table {
 
 tr {
     width: 49%;
-    border-top: 1px solid black;
+    /* border-top: 1px solid black; */
 
 }

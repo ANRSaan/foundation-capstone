@@ -167,7 +167,7 @@ module.exports = {
         .then(dbRes => {
             res.status(200).send(dbRes[0])
         })
-        .catch(err => console.log(err))
+        .catch(err => res.status(400).send(err))
     },
 
     getDeck: (req, res) => {
@@ -207,13 +207,13 @@ module.exports = {
 
         CREATE TABLE users (
             user_id SERIAL PRIMARY KEY,
-            username VARCHAR(20)
+            username VARCHAR(20) UNIQUE
         );
 
         CREATE TABLE decklists (
             decklist_id SERIAL PRIMARY KEY,
             user_id INTEGER REFERENCES users,
-            name VARCHAR(50)
+            name VARCHAR(50) UNIQUE
         );
 
         

@@ -6,9 +6,6 @@ const cardAddButton = document.getElementById('cardDiv')
 const deckAddButton = document.getElementById('deckDiv')
 
 
-
-
-
 const cardDisplayer = data => {
     let deckTbody = document.getElementById('cardHolder')
     
@@ -130,6 +127,19 @@ const deckDisplayer = data => {
     }
 }
 
+const showDecks = (data) => {
+    let selectDiv = document.getElementById('selectDiv')
+
+    let select = document.createElement('select')
+
+    for (i in data){
+        let option = document.createElement('option')
+        let button = document.createElement('button')
+
+        option.textContent = `${data[i].name}`
+    }
+}
+
 // Creates a user based on the information passed in from userHandler
 const createUser = (userName) => {
     axios.post('http://localhost:5050/api/users', userName)        
@@ -153,13 +163,20 @@ const cardGetter = () => {
 }
 
 const deckNamer = (deckName) => {
-    deckname = deckName.deckName
+    let deck = deckName.deckName
+    let currentDeck = document.getElementById('deckName')
+    currentDeck.innerHTML= `${deck}`
+
+    console.log(deck)
+    console.log(currentDeck)
+
     axios.post('http://localhost:5050/api/decklist', deckName)
-        .then(res => {
-            let deckName = document.getElementById('deckName')
-            deckName.innerHTML= `${deckname}`
+        .then(res => {            
+            currentDeck.innerHTML= `${deck}`
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+            console.log(err)               
+        })    
 }
 
 const deckGetter = () => {
@@ -178,6 +195,12 @@ const deckDeleter = (deckName) => {
             alert(`${deckName} deleted.`)
         })
         .catch(err => console.log(err))
+    }
+    
+const deckCollecter = () => {
+    axios.get('http://localhost:5050/api/decklist/user')
+        .then(res => showDecks(res.data))
+        .catch(err => console.log(err))
 }
 
 const cardAdder = (cardBody) => {
@@ -191,6 +214,7 @@ const cardDeleter = (cardName) => {
         .then(res => deckGetter())
         .catch(err => console.log(err))
 }
+
 
 // Sets up user to send to createUser
 const userHandler = (e) => {
