@@ -1,23 +1,60 @@
 body {
     margin: 1rem;
-  padding: 1rem;
-  max-width: 1200px;
-  margin: 2rem auto;
-  font-family: "Open Sans", sans-serif;
+    padding: 1rem;
+    max-width: 1204px;
+    margin: 2rem auto;
+    font-family: "Open Sans", sans-serif;
+    height: 100%;
+    background-color: #f4faff;
+}
+
+#deckChooser {
+    background-color: #118ab2;
+    width: 25%;
+    margin: auto;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    height: 40px;
+}
+
+#deckNamer {
+    margin-right: 45px;
+}
+
+#deckName {
+    height: 40px;
+    /* padding-top: 20px; */
+    margin-top: 20px;
+    text-align: center;
 }
 
 #cardDiv {
+    border: 1px solid black;
     background-color: #F56670;
-    width: 50%;
+    width: 49%;
     float:right;
+    height: 100%;
+
 }
 
 #deckDiv {
+    border: 1px solid black;
     background-color: #77ba99;
-    width: 50%;
+    width: 49%;
     float:left;
+    height: 100%;
 }
 
 table {
-    margin:30
+    width: 100%;
+    margin: 30;
+    height: 100%;
+}
+
+tr {
+    width: 49%;
+    border-top: 1px solid black;
+
 }

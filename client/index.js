@@ -1,5 +1,5 @@
-const createUserBtn = document.getElementById('createUserButton')
-const deleteUserBtn = document.getElementById('deleteUserButton')
+// const createUserBtn = document.getElementById('createUserButton')
+// const deleteUserBtn = document.getElementById('deleteUserButton')
 const nameDeckBtn = document.getElementById('createDeckButton')
 const deleteDeckBtn = document.getElementById('deleteDeckButton')
 const cardAddButton = document.getElementById('cardDiv')
@@ -239,7 +239,7 @@ const nameDeck = (e) => {
         return
     }
 
-    nameDeckBtn.remove()
+    // nameDeckBtn.remove()
     let deckName = {
         deckName: deck.value,
         userName: 'Default'
@@ -281,8 +281,8 @@ const dbSeeder = () => {
 
 dbSeeder()
 cardGetter()
-createUserBtn.addEventListener('click', userHandler)
-deleteUserBtn.addEventListener('click', userDeleter)
+// createUserBtn.addEventListener('click', userHandler)
+// deleteUserBtn.addEventListener('click', userDeleter)
 nameDeckBtn.addEventListener('click', nameDeck)
 deleteDeckBtn.addEventListener('click', deleteDeck)
 cardAddButton.addEventListener('click', click => {
