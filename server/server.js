@@ -10,9 +10,6 @@ app.use(cors())
 //seed the database
 app.post('/api/seed', seed)
 
-//common function
-app.get('/api/decklist', getDeck)
-
 //cards
 app.get('/api/cards', getCards)
 app.get('/api/cards/identities', getIdentities)
@@ -20,16 +17,17 @@ app.get('/api/cards/events', getEvents)
 app.get('/api/cards/programs', getPrograms)
 app.get('/api/cards/hardware', getHardware)
 app.get('/api/cards/resources', getResources)
-app.delete('api/cards/:cardName', deleteCards)
 
 //users
 app.post('/api/users', createUser)
 app.delete('/api/users/:userName', deleteUser)
 
 //decklists
+app.get('/api/decklist', getDeck)
 app.post('/api/decklist', createDeck)
 app.post('/api/decklist/card', addCards)
-app.delete('/api/decklist:decklistName', deleteDeck)
+app.delete('/api/decklists/card/:cardName', deleteCards)
+app.delete('/api/decklist/:deckName', deleteDeck)
 
 const port = process.env.PORT || 5050
 

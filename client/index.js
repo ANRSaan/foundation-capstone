@@ -20,7 +20,7 @@ const cardDisplayer = data => {
         let cardName = data[i].name
 
         let deckTr = document.createElement('tr')
-        let numberTd = document.createElement("td")
+        let numberTd = document.createElement('td')
         let numberLabel0 = document.createElement('label')
         let numberLabel1 = document.createElement('label')
         let numberLabel2 = document.createElement('label')
@@ -38,7 +38,6 @@ const cardDisplayer = data => {
         let factionTd = document.createElement('td')
         let factionA = document.createElement('a')
 
-        // deckTr.setAttribute('class', `${cardName}`)
         nameA.setAttribute('class', 'cardName')
         typeA.setAttribute('class', 'cardType')
         costA.setAttribute('class', 'cardCost')
@@ -86,14 +85,57 @@ const cardDisplayer = data => {
     }
 }
 
+const deckDisplayer = data => {
+    let deckTbody = document.getElementById('deckHolder')
+    
+    while (deckTbody.firstChild){
+        deckTbody.removeChild(deckTbody.firstChild)
+    }
 
+    for (let i in data) {
+        let deckTr = document.createElement('tr')
+        let numberTd = document.createElement('td')
+        let numberA = document.createElement('a')
+        let nameTd = document.createElement('td')
+        let nameA = document.createElement('a')
+        let typeTd = document.createElement('td')
+        let typeA = document.createElement('a')
+        let costTd = document.createElement('td')
+        let costA = document.createElement('a')
+        let factionTd = document.createElement('td')
+        let factionA = document.createElement('a')
+
+        // deckTr.setAttribute('class', `${cardName}`)
+        nameA.setAttribute('class', 'cardName')
+        typeA.setAttribute('class', 'cardType')
+        costA.setAttribute('class', 'cardCost')
+
+        numberA.textContent = `${data[i].number}`
+        nameA.textContent = `${data[i].name}`
+        typeA.textContent = `${data[i].type}`
+        costA.textContent = `${data[i].cost}`
+        factionA.textContent = `${data[i].faction}`
+
+        deckTbody.appendChild(deckTr)
+        deckTr.appendChild(numberTd)
+        numberTd.appendChild(numberA)
+        deckTr.appendChild(nameTd)
+        nameTd.appendChild(nameA)
+        deckTr.appendChild(typeTd)
+        typeTd.appendChild(typeA)
+        deckTr.appendChild(costTd)
+        costTd.appendChild(costA)
+        deckTr.appendChild(factionTd)
+        factionTd.appendChild(factionA)
+    }
+}
 
 // Creates a user based on the information passed in from userHandler
 const createUser = (userName) => {
     axios.post('http://localhost:5050/api/users', userName)        
         .then(res => {
             currentName = document.getElementById('currentName')
-            currentName.innerHTML= `${userName}`
+            currentName.innerHTML= `${userName.userName}`
         })
         .catch((err) => console.log(err) /*alert(`User already exists`)*/)
 }
@@ -114,37 +156,39 @@ const deckNamer = (deckName) => {
     deckname = deckName.deckName
     axios.post('http://localhost:5050/api/decklist', deckName)
         .then(res => {
-            deckName = document.getElementById('deckName')
-            // parent = deckName.parentNode
+            let deckName = document.getElementById('deckName')
             deckName.innerHTML= `${deckname}`
-
-            // let deleteDeckBtn = document.createElement('button')
-            // deleteDeckBtn.setAttribute('id', 'deleteDeckButton')
-            // deleteDeckBtn.innerHTML = "Delete Deck"
-            // parent.appendChild(deleteDeckBtn)
         })
         .catch(err => console.log(err))
 }
 
+const deckGetter = () => {
+    axios.get('http://localhost:5050/api/decklist')
+    .then(res => {
+        deckDisplayer(res.data)
+    })
+    .catch(err => console.log(err))
+}
+
 const deckDeleter = (deckName) => {
-    axios.delete(`http://localhost:5050/api/decklist${deckName}`)
+    axios.delete(`http://localhost:5050/api/decklist/${deckName}`)
         .then(res => {
             deck = document.getElementById('deckName')
             deck.innerHTML = ''
-            alert(`${deckName.deckName} deleted.`)
+            alert(`${deckName} deleted.`)
         })
         .catch(err => console.log(err))
 }
 
 const cardAdder = (cardBody) => {
     axios.post('http://localhost:5050/api/decklist/card', cardBody)
-        .then(res => deckDisplayer(res.data))
+        .then(res => deckGetter())
         .catch(err => console.log(err))
 }
 
 const cardDeleter = (cardName) => {
-    axios.delete(`http://localhost:5050/api/decklist${cardName}`)
-        .then(res => deckDisplayer(res.data))
+    axios.delete(`http://localhost:5050/api/decklists/card/${cardName}`)
+        .then(res => deckGetter())
         .catch(err => console.log(err))
 }
 
@@ -209,15 +253,14 @@ const deleteDeck = e => {
     e.preventDefault()
     
     let deck = document.getElementById('deckField')
+    // console.log(deck.value)
 
     if (deck.value === '') {
         alert('Please confirm the name of the deck to delete')
         return
     }
 
-    let deckName = {
-        deckName: deck.value
-    }
+    let deckName = deck.value
 
     deckDeleter(deckName)
     deck.value = ''
@@ -246,8 +289,8 @@ cardAddButton.addEventListener('click', click => {
     let number = click.target.value
     if (click.target && click.target.type === 'button'){
         let cardName = click.target.id
+        
         let deckName = document.getElementById('deckName').innerHTML
-        console.log(deckName)
 
         if (number !== '0'){
 
@@ -260,6 +303,7 @@ cardAddButton.addEventListener('click', click => {
             cardAdder(cardBody)        
         }
         if (number === '0'){
+
             cardDeleter(cardName)
         }
     }

@@ -12,6 +12,8 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
     }
 })
 
+let workingDeck = ''
+
 module.exports = {
 
     createUser: (req, res) => {
@@ -43,21 +45,71 @@ module.exports = {
             ORDER BY type;
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err))
     },
 
     addCards: (req, res) => {
         const {cardName, cardNumber, deckName} = req.body
 
         sequelize.query(`
-            INSERT INTO cards_to_decks (decklist_id, card_id, number)
+            DELETE FROM cards_to_decks AS ctd
+            WHERE decklist_id IN (
+                SELECT decklist_id FROM decklists
+                WHERE name = '${deckName}'
+            )
+            AND card_id IN (
+                SELECT card_id FROM cards
+                WHERE name = '${cardName}'
+            );
+
+            INSERT INTO cards_to_decks (decklist_id, card_id)
             VALUES (
                 (SELECT decklist_id FROM decklists
                 WHERE name = '${deckName}'),
                 (SELECT card_id FROM cards
-                WHERE name = '${cardName}'),
-                ${cardNumber}
+                WHERE name = '${cardName}')
+            );
+
+            UPDATE cards_to_decks
+            SET number = '${cardNumber}'
+            WHERE decklist_id IN (
+                SELECT decklist_id FROM decklists
+                WHERE name = '${deckName}'
+            )
+            AND card_id IN (
+                SELECT card_id FROM cards
+                WHERE name = '${cardName}'
             );
         `)
+        .then(() => res.status(200).send())
+        .catch(err => console.log(err))
+
+        // sequelize.query(`
+        //     SELECT * FROM cards AS c
+        //     JOIN cards_to_decks AS ctd
+        //     ON c.card_id = ctd.card_id
+        //     JOIN decklists AS d
+        //     ON d.decklist_id = ctd.decklist_id
+        //     WHERE d.name = '${deckName}';
+        // `)
+    },
+
+    deleteCards: (req, res) => {
+        const {cardName} = req.params
+
+        sequelize.query(`
+            DELETE FROM cards_to_decks AS ctd
+            WHERE decklist_id IN (
+                SELECT decklist_id FROM decklists
+                WHERE name = '${workingDeck}'
+            )
+            AND card_id IN (
+                SELECT card_id FROM cards
+                WHERE name = '${cardName}'
+            );
+        `)
+        .then(dbRes => res.status(200).send(dbRes[0]))
+        .catch(err => console.log(err))
     },
 
     getIdentities: (req, res) => {
@@ -100,14 +152,9 @@ module.exports = {
         .then(dbRes => res.status(200).send(dbRes[0]))
     },
 
-    deleteCards: (req, res) => {
-        console.log('hi')
-    },
-
     createDeck: (req, res) => {
         const {deckName, userName} = req.body
-        console.log(userName)
-        console.log(deckName)
+        workingDeck = deckName
         sequelize.query(`
             INSERT INTO decklists (user_id, name)
             VALUES (
@@ -121,36 +168,19 @@ module.exports = {
             res.status(200).send(dbRes[0])
         })
         .catch(err => console.log(err))
-
-        // for (i=0; i < cardNames.length; i++){
-        //     let card = cardNames[i]
-            
-        //     sequelize.query(`
-        //         SELECT decklist_id AS @did FROM decklists
-        //         WHERE name = '${deckName}';
-            
-        //         SELECT card_id AS @cid FROM cards
-        //         WHERE name = '${card}';
-
-        //         INSERT INTO cards_to_decks (decklist_id, card_id)
-        //         VALUES (@did, @cid);
-                
-        //     `)
-        //     .then(() => res.status(200).send())
-        //     .catch(err => console.log(err))
-            
-        // }
     },
 
     getDeck: (req, res) => {
-        const {decklistName} = req.body
+
         sequelize.query(`
             SELECT * FROM cards AS c
             JOIN cards_to_decks AS ctd
             ON c.card_id = ctd.card_id
-            JOIN decklists AS d
-            ON d.decklist_id = ctd.decklist_id
-            WHERE d.name = '${decklistName}';
+            WHERE ctd.decklist_id IN (
+                SELECT decklist_id FROM decklists
+                WHERE name = '${workingDeck}'
+            )
+            ORDER BY type
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err))
@@ -158,6 +188,7 @@ module.exports = {
 
     deleteDeck: (req, res) => {
         const {deckName} = req.params
+        console.log(deckName)
         sequelize.query(`
             DELETE FROM decklists
             WHERE name = '${deckName}';
@@ -166,41 +197,6 @@ module.exports = {
         .catch(err => console.log(err))
 
     },
-
-    // modifyDeck: (req, res) => {
-    //     const {decklistName, adds, deletes} = req.params
-
-        
-    //     for (i = 0; i < deletes.length; i++){
-    //         let card = deletes[i]
-    //         sequelize.query(`
-    //             SELECT card_id AS @cid FROM cards
-    //             WHERE name = '${card}';
-
-    //             DELETE FROM cards_to_decks
-    //             WHERE card_id = @cid;
-    //         `)
-    //         .then(() => res.status(200).send())
-    //         .catch(err => console.log(err))
-    //     }
-
-    //     for (i = 0; i < adds.length; i++){
-    //         let card = adds[i]
-    //         sequelize.query(`
-    //             SELECT decklist_id AS did FROM decklists
-    //             WHERE name = '${decklistName}';
-
-    //             SELECT card_id AS @cid FROM card
-    //             WHERE name = '${card}';
-
-    //             INSERT INTO cards_to_decks (decklist_id, card_id)
-    //             VALUES (@did, @cid);
-    //         `)
-    //         .then(() => res.status(200).send())
-    //         .catch(err => console.log(err))
-    //     }
-        
-    // },
 
     seed: (req, res) => {
         sequelize.query(`
@@ -247,8 +243,6 @@ module.exports = {
 
         INSERT INTO cards (name, type, cost, influence, faction, strength, memory, influence_limit, deck_size)
         VALUES
-        ('Ayla "Bios" Rahim: Stimulant Specialist', 'identity', null, null, 'shaper', null, null, 15, 45),
-        ('Rielle "Kit" Peddler: Transhuman', 'identity', null, null, 'shaper', null, null, 10, 45),
         ('Diesel', 'event', 0, 2, 'shaper', null, null, null, null),
         ('Test Run', 'event', 3, 3, 'shaper', null, null, null, null),
         ('The Makers Eye', 'event', 2, 2, 'shaper', null, null, null, null),
@@ -258,8 +252,6 @@ module.exports = {
         ('Gordion Blade', 'program', 4, 3, 'shaper', 2, 1, null, null),
         ('Aesops Pawnshop', 'resource', 1, 2, 'shaper', null, null, null, null),
         ('Professional Contacts', 'resource', 5, 2, 'shaper', null, null, null, null),
-        ('Quetzal: Free Spirit', 'identity', null, null, 'anarch', null, null, 15, 45),
-        ('Reina Roja: Freedom Fighter', 'identity', null, null, 'anarch', null, null, 15, 45),
         ('En Passant', 'event', 0, 2, 'anarch', null, null, null, null),
         ('Retrieval Run', 'event', 3, 2, 'anarch', null, null, null, null),
         ('Clot', 'program', 2, 2, 'anarch', null, 1, null, null),
@@ -270,8 +262,6 @@ module.exports = {
         ('Liberated Account', 'resource', 6, 2, 'anarch', null, null, null, null),
         ('Scrubber', 'resource', 2, 1, 'anarch', null, null, null, null),
         ('Xanadu', 'resource', 3, 2, 'anarch', null, null, null, null),
-        ('Ken "Express" Tenma: Dissapeared Clone', 'identity', null, null, 'criminal', null, null, 15, 45),
-        ('Steve Cambridge: Master Grifter', 'identity', null, null, 'criminal', null, null, 15, 45),
         ('Career Fair', 'event', 0, 1, 'criminal', null, null, null, null),
         ('Emergency Shutdown', 'event', 0, 2, 'criminal', null, null, null, null),
         ('Forged Activation Orders', 'event', 1, 2, 'criminal', null, null, null, null),
