@@ -42,7 +42,7 @@ module.exports = {
     getCards: (req, res) => {
         sequelize.query(`
             SELECT * FROM cards
-            ORDER BY type;
+            ORDER BY type, name;
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err))
@@ -180,7 +180,7 @@ module.exports = {
                 SELECT decklist_id FROM decklists
                 WHERE name = '${workingDeck}'
             )
-            ORDER BY type
+            ORDER BY type, name
         `)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err))

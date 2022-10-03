@@ -32,9 +32,11 @@ h1 {
     margin-right: 45px;
 }
 
-/* #headFloat {
-    display: inline-block;
-} */
+#header {
+    margin-left: 10px;
+    float:left;
+    width: 50%;
+}
 
 
 
@@ -49,14 +51,12 @@ h1 {
     text-align: left;
 }
 
-/* .cardWrap {
-    align-content: ;
-    display: flex;
-    background-color: #f7f7f2;
-    width: 50%;
-    float:right;
-    height: 100%;
-} */
+button {
+    border: 1px ridge black;
+    border-radius: 2px;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
 
 #cardDiv {
     border: 1px solid black;
@@ -68,6 +68,7 @@ h1 {
 }
 
 #deckDiv {
+    margin-top: 28px;
     border: 1px solid black;
     background-color: #77ba99;
     width: 49%;

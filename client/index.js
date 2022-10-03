@@ -4,6 +4,11 @@ const nameDeckBtn = document.getElementById('createDeckButton')
 const deleteDeckBtn = document.getElementById('deleteDeckButton')
 const cardAddButton = document.getElementById('cardDiv')
 const deckAddButton = document.getElementById('deckDiv')
+const allCardsBtn = document.getElementById('all')
+const eventCardsBtn = document.getElementById('event')
+const hardwareCardsBtn = document.getElementById('hardware')
+const programCardsBtn = document.getElementById('program')
+const resourceCardsBtn = document.getElementById('resource')
 
 
 const cardDisplayer = data => {
@@ -161,6 +166,30 @@ const cardGetter = () => {
         .then(res => cardDisplayer(res.data))
         .catch(err => console.log(err))
 }
+const eventGetter = () => {
+    axios.get('http://localhost:5050/api/cards/events')
+        .then(res => cardDisplayer(res.data))
+        .catch(err => console.log(err))
+}
+
+const hardwareGetter = () => {
+    axios.get('http://localhost:5050/api/cards/hardware')
+        .then(res => cardDisplayer(res.data))
+        .catch(err => console.log(err))
+}
+
+const programGetter = () => {
+    axios.get('http://localhost:5050/api/cards/programs')
+        .then(res => cardDisplayer(res.data))
+        .catch(err => console.log(err))
+}
+
+const resourceGetter = () => {
+    axios.get('http://localhost:5050/api/cards/resources')
+        .then(res => cardDisplayer(res.data))
+        .catch(err => console.log(err))
+}
+
 
 const deckNamer = (deckName) => {
     let deck = deckName.deckName
@@ -309,8 +338,20 @@ cardGetter()
 // deleteUserBtn.addEventListener('click', userDeleter)
 nameDeckBtn.addEventListener('click', nameDeck)
 deleteDeckBtn.addEventListener('click', deleteDeck)
+allCardsBtn.addEventListener('click', cardGetter)
+eventCardsBtn.addEventListener('click', eventGetter)
+hardwareCardsBtn.addEventListener('click', hardwareGetter)
+programCardsBtn.addEventListener('click', programGetter)
+resourceCardsBtn.addEventListener('click', resourceGetter)
 cardAddButton.addEventListener('click', click => {
     let number = click.target.value
+    let currentDeck = document.getElementById('deckName')
+
+    if (currentDeck.textContent === ''){
+        alert('Please enter a deck name first')
+        return
+    }
+
     if (click.target && click.target.type === 'button'){
         let cardName = click.target.id
         
