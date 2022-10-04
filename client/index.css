@@ -1,11 +1,14 @@
+
+
 body {
     margin: 1rem;
     padding: 1rem;
     max-width: 1200px;
     margin: 2rem auto;
-    font-family: "Open Sans", sans-serif;
+    font-family: alienWorld;
     height: 100%;
-    background-color: #f4faff;
+    background-color: #333;
+    /* #f4faff; */
 }
 
 h1 {
@@ -13,12 +16,14 @@ h1 {
     margin-bottom: 40px;
     text-align: center;
     font-family: alienWorld;
+    color: #ff6666;
 }
 
 #deckChooser {
-    background-color: #118ab2;
-    border: 1px solid black;
-    width: 25%;
+    border-bottom: 2px solid #ff6666;
+    box-shadow: 9px 1px 1px #800000; 
+    color: #ff6666;
+    width: 30%;
     margin: auto;
     margin-bottom: 170px;
     text-align: center;
@@ -38,8 +43,6 @@ h1 {
     width: 50%;
 }
 
-
-
 #deckName {
     font-family: alienWorld;
     font-size: 30px;
@@ -52,6 +55,7 @@ h1 {
 }
 
 button {
+    font-family: alienWorld;
     border: 1px ridge black;
     border-radius: 2px;
     border-bottom-left-radius: 8px;
@@ -59,8 +63,8 @@ button {
 }
 
 #cardDiv {
-    border: 1px solid black;
-    background-color: #F56670;
+    border: 1px solid #ff9c9c;
+    background-color: #ff6666;
     width: 49%;
     float:right;
     height: 100%;
@@ -69,7 +73,7 @@ button {
 
 #deckDiv {
     margin-top: 28px;
-    border: 1px solid black;
+    border: 1px solid #b1fbd6;
     background-color: #77ba99;
     width: 49%;
     float:left;
