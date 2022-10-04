@@ -19,11 +19,25 @@ h1 {
     color: #ff6666;
 }
 
+.noselect {
+    -webkit-touch-callout: none;
+      -webkit-user-select: none;
+       -khtml-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+          -webkit-tap-highlight-color: transparent;
+}
+
+input {
+    font-family: alienWorld;
+}
+
 #deckChooser {
     border-bottom: 2px solid #ff6666;
     box-shadow: 9px 1px 1px #800000; 
     color: #ff6666;
-    width: 30%;
+    width: 36%;
     margin: auto;
     margin-bottom: 170px;
     text-align: center;
@@ -57,9 +71,25 @@ h1 {
 button {
     font-family: alienWorld;
     border: 1px ridge black;
-    border-radius: 2px;
-    border-bottom-left-radius: 8px;
-    border-top-right-radius: 8px;
+    background: #333;
+	margin: 10px;
+	border: none;
+	border-radius: 10px;
+	box-shadow: -5px -5px 15px #444, 5px 5px 15px #222, inset 5px 5px 10px #444, inset -5px -5px 10px #222;
+	color: #222;
+	font-size: 16px;
+}
+
+button:hover {
+	box-shadow: -5px -5px 15px #444, 5px 5px 15px #222, inset 5px 5px 10px #222, inset -5px -5px 10px #444;
+	font-size: 15px;
+	transition: 500ms;
+    color: #93f071;
+	text-shadow: 0px 0px 10px #93f071;
+}
+
+button:focus {
+	outline: none;
 }
 
 #cardDiv {
@@ -72,7 +102,7 @@ button {
 }
 
 #deckDiv {
-    margin-top: 28px;
+    margin-top: 48px;
     border: 1px solid #b1fbd6;
     background-color: #77ba99;
     width: 49%;
