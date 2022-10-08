@@ -221,6 +221,11 @@ const deckDeleter = (deckName) => {
         .then(res => {
             deck = document.getElementById('deckName')
             deck.innerHTML = ''
+            let deckTbody = document.getElementById('deckHolder')
+    
+            while (deckTbody.firstChild){
+                deckTbody.removeChild(deckTbody.firstChild)
+            }
             alert(`${deckName} deleted.`)
         })
         .catch(err => console.log(err))
@@ -347,7 +352,7 @@ cardAddButton.addEventListener('click', click => {
     let number = click.target.value
     let currentDeck = document.getElementById('deckName')
 
-    if (currentDeck.textContent === ''){
+    if (currentDeck.textContent === '' && click.target.type === 'button'){
         alert('Please enter a deck name first')
         return
     }

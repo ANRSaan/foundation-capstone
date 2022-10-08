@@ -190,6 +190,11 @@ module.exports = {
         const {deckName} = req.params
         console.log(deckName)
         sequelize.query(`
+            DELETE FROM cards_to_decks AS ctd
+            WHERE decklist_id IN (
+            SELECT decklist_id FROM decklists
+            WHERE name = '${workingDeck}'
+        );
             DELETE FROM decklists
             WHERE name = '${deckName}';
         `)
